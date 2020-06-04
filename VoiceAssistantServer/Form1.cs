@@ -65,6 +65,7 @@ namespace VoiceAssistantServer
         public Form1()
         {
             InitializeComponent();
+            timer1.Enabled = true;
         }
 
         // ================== All the Async TCP Socket Function(begin) ================== //
@@ -216,6 +217,19 @@ namespace VoiceAssistantServer
 
         // ================== All the Async TCP Socket Function(end) ================== //
 
+        private void showDatabaseOnDataGridView()
+        {
+            String con, sql;
+            con = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\waitinglin\source\repos\VoiceAssistantServer\VoiceAssistantServer\Database1.mdf;Integrated Security=True";
+            sql = "select * from Patient";
+            SqlConnection connection = new SqlConnection(con);
+            connection.Open();
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(sql, con);
+            DataSet dataSet = new DataSet();
+            dataAdapter.Fill(dataSet, "patient");
+            dataGridView1.DataSource = dataSet.Tables["patient"];
+            connection.Close();
+        }
 
         private void updateDatabase(Nurse nurse, Patient patient)
         {
@@ -360,6 +374,14 @@ namespace VoiceAssistantServer
         {
             Thread thread = new Thread(StartListening);
             thread.Start();
+            button3.Enabled = false;
+            display("server 啟動");
+            showDatabaseOnDataGridView();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            showDatabaseOnDataGridView();
         }
 
         // =================== Button OnClick Function (end) =================== //
